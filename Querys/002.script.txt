@@ -1,0 +1,26 @@
+DROP TABLE [tmp].[Months]
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [tmp].[Months](
+	[month] [int] NULL,
+	[year] [int] NULL
+) ON [PRIMARY]
+
+DECLARE @year INTEGER
+DECLARE @month INTEGER
+
+SET @year=2014
+SET @month=1
+
+WHILE  @year<=2015
+BEGIN
+	SET @month=1
+	WHILE  @month<=3
+	BEGIN
+	   insert into tmp.Months([month], [year]) VALUES (@month, @year)
+	   SET @month = @month  +1
+	END
+   SET @year = @year  +1
+END
+
