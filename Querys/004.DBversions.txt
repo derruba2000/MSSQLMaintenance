@@ -1,0 +1,16 @@
+DECLARE @ver nvarchar(128)
+SET @ver = CAST(serverproperty('ProductVersion') AS nvarchar)
+SET @ver = SUBSTRING(@ver, 1, CHARINDEX('.', @ver) - 1)
+
+IF ( @ver = '7' )
+   SELECT 'SQL Server 7'
+ELSE IF ( @ver = '8' )
+   SELECT 'SQL Server 2000'
+ELSE IF ( @ver = '9' )
+   SELECT 'SQL Server 2005'
+ELSE IF ( @ver = '10' )
+   SELECT 'SQL Server 2008/2008 R2'
+ELSE IF ( @ver = '11' )
+   SELECT 'SQL Server 2012'
+ELSE
+   SELECT 'Unsupported SQL Server Version'
