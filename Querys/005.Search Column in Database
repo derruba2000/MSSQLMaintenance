@@ -1,4 +1,10 @@
-SELECT c.name AS ColName, t.name AS TableName
-FROM sys.columns c
-    JOIN sys.tables t ON c.object_id = t.object_id
-WHERE c.name LIKE '%PROJECT%'
+SELECT o.Name                   as Table_Name
+     , c.Name                   as Field_Name
+     , t.Name                   as Data_Type
+     , t.length                 as Length_Size
+     , t.prec                   as Precision_
+FROM syscolumns c 
+     INNER JOIN sysobjects o ON o.id = c.id
+     LEFT JOIN  systypes t on t.xtype = c.xtype  
+WHERE o.type = 'U' 
+ORDER BY o.Name, c.Name
