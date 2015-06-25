@@ -3,15 +3,17 @@ DECLARE
     @table_name     SYSNAME,
     @table_id       INT,
     @column_name    SYSNAME,
-    @sql_string     VARCHAR(2000)
+    @sql_string     VARCHAR(2000),
+	@schema_name   SYSNAME
 
-SET @search_string = 'FMW LAW LTD'
 
-DECLARE tables_cur CURSOR FOR SELECT name, object_id FROM sys.objects WHERE type = 'U'
+SET @search_string = 'MRO'
+
+DECLARE tables_cur CURSOR FOR SELECT O.name, O.object_id, S.name as [SchemaName] FROM sys.objects O inner join sys.schemas S ON O.[schema_id] = S.[schema_id] WHERE O.[type] = 'U'
 
 OPEN tables_cur
 
-FETCH NEXT FROM tables_cur INTO @table_name, @table_id
+FETCH NEXT FROM tables_cur INTO @table_name, @table_id, @schema_name
 
 WHILE (@@FETCH_STATUS = 0)
 BEGIN
@@ -22,7 +24,7 @@ BEGIN
     FETCH NEXT FROM columns_cur INTO @column_name
     WHILE (@@FETCH_STATUS = 0)
     BEGIN
-        SET @sql_string = 'IF EXISTS (SELECT * FROM ' + @table_name + ' WHERE [' + @column_name + '] LIKE ''%' + @search_string + '%'') PRINT ''' + @table_name + ', ' + @column_name + ''''
+        SET @sql_string = 'IF EXISTS (SELECT * FROM '+ @schema_name  +'.' + @table_name + ' WHERE [' + @column_name + '] LIKE ''%' + @search_string + '%'') PRINT ''' + @table_name + ', ' + @column_name + ''''
 
         EXECUTE(@sql_string)
 
@@ -33,7 +35,7 @@ BEGIN
 
     DEALLOCATE columns_cur
 
-    FETCH NEXT FROM tables_cur INTO @table_name, @table_id
+    FETCH NEXT FROM tables_cur INTO @table_name, @table_id, @schema_name
 END
 
 CLOSE tables_cur
